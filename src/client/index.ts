@@ -31,29 +31,24 @@ form.onsubmit = async (event: Event) => {
 
     // Display the result
     if (Array.isArray(data)) {
-      data.forEach((wordData: WordData) => {
-        const meanings = wordData.meanings;
+      const wordData: WordData = data[0];
+      const firstMeaning: Meaning = wordData.meanings[0];
+      const partOfSpeech = firstMeaning.partOfSpeech;
+      const firstDefinition: Definition = firstMeaning.definitions[0];
+      const def = firstDefinition.definition;
+      const example = firstDefinition.example;
 
-        meanings.forEach((meaning: Meaning) => {
-          const partOfSpeech = meaning.partOfSpeech;
-          const definitions = meaning.definitions;
+      const resultHTML = `
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Part of Speech: ${partOfSpeech}</h5>
+          <p class="card-text"><strong>Definition:</strong> ${def}</p>
+          ${example ? `<p class="card-text"><strong>Example:</strong> ${example}</p>` : ''}
+        </div>
+      </div>
+    `;
+      resultContainer.innerHTML = resultHTML;
 
-          definitions.forEach((definition: Definition) => {
-            const def = definition.definition;
-            const example = definition.example;
-            const resultHTML = `
-              <div>
-                <strong>Part of Speech:</strong> ${partOfSpeech}
-                <br>
-                <strong>Definition:</strong> ${def}
-                ${example ? `<br><strong>Example:</strong> ${example}` : ''}
-                <br><br>
-              </div>
-            `;
-            resultContainer.innerHTML += resultHTML;
-          });
-        });
-      });
     } else {
       resultContainer.innerHTML = `<div><strong>Error:</strong> ${data.title}: ${data.message}</div>`;
     }
